@@ -1,0 +1,1942 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verdict — Evidence-Led Hiring Deliberation Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════════════════
+       VERDICT ENTERPRISE DESIGN TOKENS
+       ═══════════════════════════════════════════════════════ */
+    :root {
+      /* Surface & Canvas (Clean Enterprise Slate) */
+      --bg-page: #f8fafc;
+      --surface-base: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --surface-muted: #f8fafc;
+      --surface-hover: #f1f5f9;
+      
+      /* Borders */
+      --border-light: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --border-dark: #0f172a;
+      
+      /* Typography */
+      --text-main: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+      --text-caption: #94a3b8;
+
+      /* Primary Brand (Executive Navy / Royal Cobalt) */
+      --brand-navy: #0f172a;
+      --brand-blue: #1d4ed8;
+      --brand-blue-soft: #eff6ff;
+      --brand-blue-border: #bfdbfe;
+
+      /* Semantic Status */
+      --status-hire-text: #15803d;
+      --status-hire-bg: #f0fdf4;
+      --status-hire-border: #bbf7d0;
+
+      --status-hold-text: #b45309;
+      --status-hold-bg: #fffbeb;
+      --status-hold-border: #fde68a;
+
+      --status-reject-text: #b91c1c;
+      --status-reject-bg: #fef2f2;
+      --status-reject-border: #fecaca;
+
+      /* Elevation & Radii */
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
+      --shadow-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.08);
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    body.dark {
+      --bg-page: #090e17;
+      --surface-base: #111a28;
+      --surface-subtle: #162235;
+      --surface-muted: #0d1522;
+      --surface-hover: #1c2b42;
+      
+      --border-light: #1f2d42;
+      --border-subtle: #192638;
+      --border-dark: #f8fafc;
+      
+      --text-main: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --text-caption: #64748b;
+
+      --brand-navy: #f8fafc;
+      --brand-blue: #60a5fa;
+      --brand-blue-soft: #172a48;
+      --brand-blue-border: #25406b;
+
+      --status-hire-text: #4ade80;
+      --status-hire-bg: #052e16;
+      --status-hire-border: #166534;
+
+      --status-hold-text: #fbbf24;
+      --status-hold-bg: #2b1d03;
+      --status-hold-border: #78350f;
+
+      --status-reject-text: #f87171;
+      --status-reject-bg: #320c10;
+      --status-reject-border: #991b1b;
+
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       BASE STYLES
+       ═══════════════════════════════════════════════════════ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-secondary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      min-height: 100vh;
+    }
+
+    .main-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 90px;
+    }
+
+    h1, h2, h3, h4 {
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TOP NAVIGATION BAR
+       ═══════════════════════════════════════════════════════ */
+    .navbar {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 32px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .monogram-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background: var(--brand-navy);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      box-shadow: var(--shadow-sm);
+    }
+
+    body.dark .monogram-badge {
+      background: #ffffff;
+      color: #090e17;
+    }
+
+    .nav-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+    }
+
+    .nav-subtag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+    }
+
+    .theme-button {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+
+    .theme-button:hover {
+      border-color: var(--text-main);
+      color: var(--text-main);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       EXECUTIVE HEADER & HERO
+       ═══════════════════════════════════════════════════════ */
+    .hero-container {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.75fr);
+      gap: 32px;
+      align-items: stretch;
+      margin-bottom: 36px;
+    }
+
+    .hero-lead-card {
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 40px 38px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hero-category-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--brand-blue);
+      margin-bottom: 12px;
+    }
+
+    .hero-lead-card h1 {
+      font-size: clamp(32px, 3.5vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      margin-bottom: 14px;
+      color: var(--text-main);
+    }
+
+    .hero-lead-card p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin-bottom: 24px;
+    }
+
+    .hero-feature-pills {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .hero-feature-pills span strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    /* Side Overview Card */
+    .hero-side-card {
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .hero-side-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .hero-side-card p {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    .persona-spec-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .persona-spec-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      font-size: 12.5px;
+    }
+
+    .persona-spec-item strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .persona-spec-item span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION HEADERS
+       ═══════════════════════════════════════════════════════ */
+    .section-bar {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .section-bar-left h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .section-bar-left p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       INTAKE DOSSIER FORM
+       ═══════════════════════════════════════════════════════ */
+    .intake-console {
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 26px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 36px;
+    }
+
+    .form-row-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: var(--surface-base);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .form-textarea {
+      height: 40px;
+      padding: 8px 12px;
+      resize: none;
+      line-height: 1.4;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--border-dark);
+      box-shadow: 0 0 0 1px var(--border-dark);
+    }
+
+    /* File Dropzones */
+    .file-card-dropzone {
+      border: 1.5px dashed var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      background: var(--surface-subtle);
+      cursor: pointer;
+      min-height: 68px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .file-card-dropzone:hover {
+      border-color: var(--brand-blue);
+      background: var(--brand-blue-soft);
+    }
+
+    .file-type-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .file-display-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-secondary-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .btn-toggle-compare {
+      grid-column: 1 / -1;
+      padding: 9px 14px;
+      background: transparent;
+      border: 1px dashed var(--border-light);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .btn-toggle-compare:hover {
+      background: var(--surface-subtle);
+      border-color: var(--text-main);
+    }
+
+    .compare-candidate-grid {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .compare-candidate-grid.hidden {
+      display: none;
+    }
+
+    .btn-submit-panel {
+      grid-column: 1 / -1;
+      height: 46px;
+      border: 0;
+      border-radius: var(--radius-sm);
+      background: var(--brand-navy);
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+      margin-top: 4px;
+    }
+
+    body.dark .btn-submit-panel {
+      background: #ffffff;
+      color: #090e17;
+    }
+
+    .btn-submit-panel:hover:not(:disabled) {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .btn-submit-panel:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       STAGE PROGRESSION TRACKER
+       ═══════════════════════════════════════════════════════ */
+    .stage-track {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: var(--surface-base);
+      margin-bottom: 36px;
+      overflow: hidden;
+    }
+
+    .stage-cell {
+      padding: 12px 14px;
+      border-right: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stage-cell:last-child {
+      border-right: 0;
+    }
+
+    .stage-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .stage-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .stage-cell.active {
+      background: var(--brand-blue-soft);
+      border-bottom: 2px solid var(--brand-blue);
+    }
+
+    .stage-cell.active .stage-title {
+      color: var(--text-main);
+    }
+
+    .stage-cell.done .stage-num {
+      color: var(--status-hire-text);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       NOTICES & INITIAL STATE
+       ═══════════════════════════════════════════════════════ */
+    .system-error-card {
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      background: var(--status-reject-bg);
+      border: 1px solid var(--status-reject-border);
+      color: var(--status-reject-text);
+      font-size: 13.5px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      display: none;
+    }
+
+    .system-error-card:not(:empty) {
+      display: block;
+    }
+
+    .empty-dossier-slate {
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 56px 24px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .empty-dossier-slate h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .empty-dossier-slate p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Candidate Switcher Tabs */
+    .candidate-tab-cluster {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .candidate-switch-pill {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 7px 16px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+
+    .candidate-switch-pill:hover {
+      border-color: var(--text-main);
+    }
+
+    .candidate-switch-pill.selected {
+      background: var(--brand-navy);
+      color: #ffffff;
+      border-color: var(--brand-navy);
+    }
+
+    body.dark .candidate-switch-pill.selected {
+      background: #ffffff;
+      color: #090e17;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       ADJUDICATION DOSSIER OUTPUT
+       ═══════════════════════════════════════════════════════ */
+    .dossier-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Top Executive Adjudication Card */
+    .adjudication-card {
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.75fr);
+      gap: 32px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .verdict-status-banner {
+      border-left: 4px solid var(--text-main);
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-light);
+      margin-bottom: 14px;
+    }
+
+    .verdict-status-banner.hire {
+      border-left: 4px solid var(--status-hire-text);
+      background: var(--status-hire-bg);
+      border-color: var(--status-hire-border);
+    }
+
+    .verdict-status-banner.interview {
+      border-left: 4px solid var(--status-hold-text);
+      background: var(--status-hold-bg);
+      border-color: var(--status-hold-border);
+    }
+
+    .verdict-status-banner.reject {
+      border-left: 4px solid var(--status-reject-text);
+      background: var(--status-reject-bg);
+      border-color: var(--status-reject-border);
+    }
+
+    .verdict-heading-text {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .verdict-status-banner.hire .verdict-heading-text { color: var(--status-hire-text); }
+    .verdict-status-banner.interview .verdict-heading-text { color: var(--status-hold-text); }
+    .verdict-status-banner.reject .verdict-heading-text { color: var(--status-reject-text); }
+
+    .adjudication-narrative-p {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-main);
+      margin-bottom: 16px;
+    }
+
+    .benchmark-data-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      font-size: 11.5px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 12px;
+    }
+
+    .benchmark-data-row strong {
+      color: var(--text-secondary);
+    }
+
+    /* Confidence Module */
+    .confidence-panel {
+      border-left: 1px solid var(--border-light);
+      padding-left: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .stat-caption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .stat-confidence-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 44px;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--text-main);
+      letter-spacing: -0.03em;
+    }
+
+    .confidence-meter-track {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border-light);
+      overflow: hidden;
+    }
+
+    .confidence-meter-fill {
+      height: 100%;
+      background: var(--text-main);
+    }
+
+    body.dark .confidence-meter-fill {
+      background: var(--brand-blue);
+    }
+
+    .weighted-score-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+    }
+
+    .weighted-score-line strong {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-main);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       SPECIALIST EVALUATION DOSSIERS (4 PERSONAS)
+       ═══════════════════════════════════════════════════════ */
+    .persona-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .specialist-card {
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.15s ease;
+    }
+
+    .specialist-card:hover {
+      border-color: var(--border-dark);
+    }
+
+    .specialist-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 8px;
+    }
+
+    .specialist-role-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .specialist-pills-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .score-metric-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+    }
+
+    .fit-status-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+    }
+
+    .fit-status-badge.strong {
+      background: var(--status-hire-bg);
+      color: var(--status-hire-text);
+      border-color: var(--status-hire-border);
+    }
+
+    .fit-status-badge.promising {
+      background: var(--brand-blue-soft);
+      color: var(--brand-blue);
+      border-color: var(--brand-blue-border);
+    }
+
+    .fit-status-badge.validation {
+      background: var(--status-hold-bg);
+      color: var(--status-hold-text);
+      border-color: var(--status-hold-border);
+    }
+
+    .specialist-evaluation-text {
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+
+    .text-clamp {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .text-clamp.expanded {
+      display: block;
+    }
+
+    .btn-clamp-readmore {
+      background: none;
+      border: 0;
+      color: var(--brand-blue);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 2px 0 0;
+      text-decoration: underline;
+      display: block;
+    }
+
+    /* Citation Block */
+    .citation-callout-box {
+      border-left: 2px solid var(--border-dark);
+      background: var(--surface-subtle);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+    }
+
+    .citation-tag-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .citation-quote-string {
+      font-style: italic;
+      color: var(--text-main);
+    }
+
+    /* Movement Footnote */
+    .deliberation-movement-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 8px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .movement-score-track {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+
+    .movement-badge-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .movement-badge-tag.revised {
+      background: var(--status-hold-bg);
+      color: var(--status-hold-text);
+    }
+
+    .movement-badge-tag.held {
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       DIALECTICAL DEBATE SECTION
+       ═══════════════════════════════════════════════════════ */
+    .debate-main-card {
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 26px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .debate-two-col-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.75fr);
+      gap: 24px;
+    }
+
+    .debate-turn-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .turn-dialogue-item {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      background: var(--surface-base);
+    }
+
+    .turn-dialogue-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .turn-speaker-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .turn-index-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .turn-reply-notice {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .turn-statement-body {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .turn-citation-chip {
+      display: inline-block;
+      font-size: 11.5px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+    }
+
+    .turn-citation-chip strong {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-main);
+    }
+
+    /* Sidebar Adjudication Details */
+    .debate-sidebar-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sidebar-panel-block {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      padding: 16px;
+    }
+
+    .sidebar-panel-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 4px;
+    }
+
+    .weight-metric-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 40px;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+    .weight-meter-bg {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-light);
+      overflow: hidden;
+    }
+
+    .weight-meter-active {
+      height: 100%;
+      background: var(--text-main);
+    }
+
+    body.dark .weight-meter-active {
+      background: var(--brand-blue);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       FINDINGS & AUDITABLE EVIDENCE LEDGER
+       ═══════════════════════════════════════════════════════ */
+    .findings-side-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .findings-card-panel {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: var(--surface-base);
+      padding: 20px;
+    }
+
+    .findings-clean-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .findings-clean-list li {
+      font-size: 13px;
+      line-height: 1.55;
+      position: relative;
+      padding-left: 14px;
+    }
+
+    .findings-clean-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--text-muted);
+    }
+
+    /* Evidence Ledger */
+    .ledger-container {
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ledger-entry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .ledger-item-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-light);
+      font-size: 12.5px;
+    }
+
+    .ledger-id-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-base);
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+      flex-shrink: 0;
+    }
+
+    /* Speech Player */
+    .audio-recording-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 20px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: var(--surface-base);
+      flex-wrap: wrap;
+    }
+
+    .speech-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .speech-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      border: 1.5px solid var(--border-light);
+      background: var(--surface-raised);
+      color: var(--text-main);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .speech-btn:hover { background: var(--surface-hover); border-color: var(--brand-blue); color: var(--brand-blue); }
+    .speech-btn.playing { background: var(--brand-blue); color: #fff; border-color: var(--brand-blue); }
+    .speech-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .speech-progress-wrap {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .speech-turn-label {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .speech-progress-bg {
+      height: 3px;
+      background: var(--border-light);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .speech-progress-fill {
+      height: 100%;
+      background: var(--brand-blue);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .speech-rate-select {
+      font-size: 12px;
+      padding: 5px 8px;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: var(--surface-base);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════════════════════ */
+    @media (max-width: 860px) {
+      .hero-container,
+      .form-row-grid,
+      .adjudication-card,
+      .persona-grid,
+      .debate-two-col-grid,
+      .findings-side-grid,
+      .compare-candidate-grid {
+        grid-template-columns: 1fr;
+      }
+      .stage-track {
+        grid-template-columns: 1fr;
+      }
+      .stage-cell {
+        border-right: 0;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .confidence-panel {
+        border-left: 0;
+        padding-left: 0;
+        border-top: 1px solid var(--border-light);
+        padding-top: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-wrap">
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <a href="/" class="nav-brand">
+      <div class="monogram-badge">V</div>
+      <span class="nav-title">Verdict</span>
+      <span class="nav-subtag">Multi-Specialist Hiring Deliberation</span>
+    </a>
+    <div>
+      <button class="theme-button" id="theme" type="button" aria-pressed="false">
+        <span id="theme-label">Toggle Theme</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Executive Header & Intake Briefing -->
+  <section class="hero-container">
+    <div class="hero-lead-card">
+      <div>
+        <div class="hero-category-label">Deliberative Intelligence</div>
+        <h1>Adjudicate candidates on evidence, not impression.</h1>
+        <p>
+          Verdict runs four isolated specialist evaluations, pressure-tests conflicting assessments in a dialectical debate, and delivers an auditable, confidence-calibrated hiring decision.
+        </p>
+      </div>
+
+      <div class="hero-feature-pills">
+        <span><strong>4</strong> Independent Lenses</span>
+        <span><strong>1</strong> Auditable Evidence Ledger</span>
+        <span><strong>0</strong> Peer Bias Before Debate</span>
+      </div>
+    </div>
+
+    <div class="hero-side-card">
+      <div class="hero-category-label">Panel Composition</div>
+      <h3>Four Specialist Seats</h3>
+      <p>Every evaluator analyzes the exact same verified candidate record in strict isolation before entering the panel debate.</p>
+
+      <div class="persona-spec-list">
+        <div class="persona-spec-item">
+          <strong>Technical Specialist</strong>
+          <span>Depth & Tooling</span>
+        </div>
+        <div class="persona-spec-item">
+          <strong>HR / Culture Specialist</strong>
+          <span>Collaboration & Trust</span>
+        </div>
+        <div class="persona-spec-item">
+          <strong>Hiring Manager</strong>
+          <span>Role Impact & Delivery</span>
+        </div>
+        <div class="persona-spec-item">
+          <strong>Skeptic & Auditor</strong>
+          <span>Vulnerabilities & Claims</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 01: Intake Dossier -->
+  <section class="intake-console">
+    <div class="section-bar">
+      <div class="section-bar-left">
+        <h2>Candidate & Role Dossier Intake</h2>
+        <p>Define role criteria and attach verified candidate documentation for multi-agent review.</p>
+      </div>
+    </div>
+
+    <form class="form-row-grid" id="form">
+      <div class="form-group">
+        <label class="form-label" for="position">Target Position</label>
+        <input class="form-input" id="position" name="target_position" required placeholder="e.g. Senior Staff AI Engineer">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="requirementsField">Role Requirements Fallback</label>
+        <textarea class="form-textarea" id="requirementsField" name="requirements" placeholder="Paste role requirements if no file attached"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Required Skills File</label>
+        <div class="file-card-dropzone" onclick="document.getElementById('requiredSkills').click()">
+          <span class="file-type-hint">Role Criteria</span>
+          <span class="file-display-name" id="skillsName">Attach Skills Document</span>
+          <span class="file-secondary-hint">TXT, PDF, DOCX (optional)</span>
+          <input class="visually-hidden" id="requiredSkills" name="required_skills" type="file" accept=".txt,.pdf,.docx" style="display:none">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Candidate Resume</label>
+        <div class="file-card-dropzone" onclick="document.getElementById('candidateResume').click()">
+          <span class="file-type-hint">Primary Record</span>
+          <span class="file-display-name" id="resumeName">Upload Candidate Resume</span>
+          <span class="file-secondary-hint">TXT, PDF, DOCX</span>
+          <input class="visually-hidden" id="candidateResume" name="candidate_resume" type="file" accept=".txt,.pdf,.docx" style="display:none">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Interview Transcript</label>
+        <div class="file-card-dropzone" onclick="document.getElementById('candidateTranscript').click()">
+          <span class="file-type-hint">Primary Record</span>
+          <span class="file-display-name" id="transcriptName">Upload Interview Transcript</span>
+          <span class="file-secondary-hint">TXT, PDF, DOCX</span>
+          <input class="visually-hidden" id="candidateTranscript" name="candidate_transcript" type="file" accept=".txt,.pdf,.docx" style="display:none">
+        </div>
+      </div>
+
+      <button type="button" class="btn-toggle-compare" id="addCandidate" aria-expanded="false">
+        <span>+ Add Candidate B for Comparative Evaluation</span>
+      </button>
+
+      <div class="compare-candidate-grid hidden" id="candidateBFields">
+        <div class="form-group">
+          <label class="form-label">Candidate B Resume</label>
+          <div class="file-card-dropzone" onclick="document.getElementById('candidateBResume').click()">
+            <span class="file-type-hint">Comparative Record</span>
+            <span class="file-display-name" id="candidateBResumeName">Upload Resume B</span>
+            <span class="file-secondary-hint">TXT, PDF, DOCX</span>
+            <input class="visually-hidden" id="candidateBResume" name="candidate_b_resume" type="file" accept=".txt,.pdf,.docx" style="display:none">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Candidate B Transcript</label>
+          <div class="file-card-dropzone" onclick="document.getElementById('candidateBTranscript').click()">
+            <span class="file-type-hint">Comparative Record</span>
+            <span class="file-display-name" id="candidateBTranscriptName">Upload Transcript B</span>
+            <span class="file-secondary-hint">TXT, PDF, DOCX</span>
+            <input class="visually-hidden" id="candidateBTranscript" name="candidate_b_transcript" type="file" accept=".txt,.pdf,.docx" style="display:none">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-submit-panel" id="submit">
+        <span>Convene Panel & Initiate Deliberation →</span>
+      </button>
+    </form>
+  </section>
+
+  <!-- Section 02: Deliberation Stages -->
+  <div class="stage-track" aria-label="Deliberation Sequence">
+    <div class="stage-cell" data-step="0">
+      <span class="stage-num">01</span>
+      <span class="stage-title">Evidence Extraction</span>
+    </div>
+    <div class="stage-cell" data-step="1">
+      <span class="stage-num">02</span>
+      <span class="stage-title">Isolated Scoring</span>
+    </div>
+    <div class="stage-cell" data-step="2">
+      <span class="stage-num">03</span>
+      <span class="stage-title">Dialectical Debate</span>
+    </div>
+    <div class="stage-cell" data-step="3">
+      <span class="stage-num">04</span>
+      <span class="stage-title">Weight Balancing</span>
+    </div>
+    <div class="stage-cell" data-step="4">
+      <span class="stage-num">05</span>
+      <span class="stage-title">Adjudicated Verdict</span>
+    </div>
+  </div>
+
+  <!-- Operational Notices -->
+  <div id="message" class="system-error-card" role="alert"></div>
+
+  <!-- Initial Blank State -->
+  <div id="empty" class="empty-dossier-slate">
+    <h3>Dossier Workspace Ready</h3>
+    <p>Upload candidate materials and target criteria above. The multi-specialist panel will extract verified claims, generate independent scores, deliberate key risks, and publish a decision memo.</p>
+  </div>
+
+  <!-- Candidate Comparison Tabs -->
+  <div id="tabs" class="candidate-tab-cluster" style="display:none"></div>
+
+  <!-- Main Output Dossier -->
+  <main id="report" style="display:none"></main>
+</div>
+
+<script>
+  const $ = s => document.querySelector(s);
+  const theme = $('#theme');
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // Theme Toggler
+  theme.onclick = () => {
+    const isDark = document.body.classList.toggle('dark');
+    localStorage.verdictTheme = isDark ? 'dark' : 'light';
+    theme.setAttribute('aria-pressed', String(isDark));
+    $('#theme-label').textContent = isDark ? 'Light Theme' : 'Dark Theme';
+  };
+  if (localStorage.verdictTheme === 'dark') {
+    document.body.classList.add('dark');
+    theme.setAttribute('aria-pressed', 'true');
+    $('#theme-label').textContent = 'Light Theme';
+  } else {
+    $('#theme-label').textContent = 'Dark Theme';
+  }
+
+  // Upload labels
+  function names(id, empty) {
+    const f = $(id).files;
+    return [...f].map(x => x.name).join(', ') || empty;
+  }
+  $('#requiredSkills').onchange = () => $('#skillsName').textContent = names('#requiredSkills', 'Attach Skills Document');
+  $('#candidateResume').onchange = () => $('#resumeName').textContent = names('#candidateResume', 'Upload Candidate Resume');
+  $('#candidateTranscript').onchange = () => $('#transcriptName').textContent = names('#candidateTranscript', 'Upload Interview Transcript');
+  $('#candidateBResume').onchange = () => $('#candidateBResumeName').textContent = names('#candidateBResume', 'Upload Resume B');
+  $('#candidateBTranscript').onchange = () => $('#candidateBTranscriptName').textContent = names('#candidateBTranscript', 'Upload Transcript B');
+
+  // Candidate B Toggle
+  let candidateBEnabled = false;
+  $('#addCandidate').onclick = () => {
+    candidateBEnabled = !candidateBEnabled;
+    $('#candidateBFields').classList.toggle('hidden', !candidateBEnabled);
+    $('#addCandidate').setAttribute('aria-expanded', String(candidateBEnabled));
+    $('#addCandidate').innerHTML = candidateBEnabled ? '<span>− Remove Candidate B</span>' : '<span>+ Add Candidate B for Comparative Evaluation</span>';
+    if (!candidateBEnabled) {
+      $('#candidateBResume').value = '';
+      $('#candidateBTranscript').value = '';
+      $('#candidateBResumeName').textContent = 'Upload Resume B';
+      $('#candidateBTranscriptName').textContent = 'Upload Transcript B';
+    }
+  };
+
+  function setStep(n) {
+    document.querySelectorAll('.stage-cell').forEach((s, i) => {
+      s.className = 'stage-cell ' + (i < n ? 'done' : i === n ? 'active' : '');
+    });
+  }
+
+  function show(t) {
+    $('#message').textContent = t;
+  }
+
+  window.toggleClamp = function(id) {
+    const p = document.getElementById('clamp-' + id);
+    const btn = document.getElementById('btn-clamp-' + id);
+    const isExpanded = p.classList.toggle('expanded');
+    btn.textContent = isExpanded ? 'Collapse assessment' : 'Expand full assessment';
+  };
+
+  // Render Full Report
+  function renderReport(d) {
+    const a = d.adjudication;
+    const turns = d.debate.turns || [];
+    // Load turns into speech engine and reset player
+    _speechTurns = turns;
+    _speechIdx = 0;
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    _speechPaused = false;
+    _speechSetUI(false);
+    const _lbl = document.getElementById('speech-turn-label');
+    if (_lbl) _lbl.textContent = `${turns.length} turns ready`;
+    const _fill = document.getElementById('speech-progress-fill');
+    if (_fill) _fill.style.width = '0%';
+
+    const stateLog = d.state_log || [];
+
+    const r = (d.recommendation || '').toUpperCase();
+    let decCls = 'interview';
+    if (r.startsWith('HIRE')) decCls = 'hire';
+    else if (r.startsWith('REJECT')) decCls = 'reject';
+
+    // 4 Specialist Opinion Cards
+    const personasHtml = d.agents.map((ag, i) => {
+      const isRevised = ag.revised_after_debate || ag.score !== ag.pre_debate_score;
+      const fitClass = ag.fit === 'Strong' ? 'strong' : ag.fit === 'Promising' ? 'promising' : 'validation';
+
+      return `
+        <article class="specialist-card">
+          <div class="specialist-card-header">
+            <div class="specialist-role-title">${esc(ag.role)}</div>
+            <div class="specialist-pills-row">
+              <span class="fit-status-badge ${fitClass}">${esc(ag.fit)} Fit</span>
+              <span class="score-metric-pill">${esc(ag.score)} / 10</span>
+            </div>
+          </div>
+
+          <div class="specialist-evaluation-text">
+            <p class="text-clamp" id="clamp-ag-${i}">${esc(ag.reasoning)}</p>
+            <button class="btn-clamp-readmore" id="btn-clamp-ag-${i}" onclick="toggleClamp('ag-${i}')">Expand full assessment</button>
+          </div>
+
+          <div class="citation-callout-box">
+            <div class="citation-tag-id">Primary Citation: ${esc(ag.evidence_id || 'Document Citation')}</div>
+            <div class="citation-quote-string">"${esc(ag.quote)}"</div>
+          </div>
+
+          <div class="deliberation-movement-footer">
+            <div>Baseline: <span class="movement-score-track">${esc(ag.pre_debate_score)}</span> → Post-Debate: <span class="movement-score-track">${esc(ag.score)}</span></div>
+            <span class="movement-badge-tag ${isRevised ? 'revised' : 'held'}">
+              ${isRevised ? 'Position Shifted' : 'Position Maintained'}
+            </span>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Deliberation Dialogue Stream
+    const turnsHtml = turns.map(t => `
+      <div class="turn-dialogue-item">
+        <div class="turn-dialogue-top">
+          <span class="turn-speaker-title">${esc(t.speaker)}</span>
+          <span class="turn-index-pill">Turn 0${t.turn} · Stance: ${esc(t.stance || 'Assessment')}</span>
+        </div>
+        ${t.responds_to ? `<div class="turn-reply-notice">↳ Directly addressing ${esc(t.responds_to)}</div>` : ''}
+        <div class="turn-statement-body">${esc(t.message || t.reasoning || '')}</div>
+        ${t.evidence_id ? `
+          <div class="turn-citation-chip">
+            Cited <strong>${esc(t.evidence_id)}</strong>: "${esc(t.quote)}"
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+
+    // Dimension weights
+    const weightsHtml = Object.entries(a.weights || {}).map(([role, v]) => `
+      <div class="weight-metric-row">
+        <span>${esc(role)}</span>
+        <div class="weight-meter-bg"><div class="weight-meter-active" style="width:${v}%"></div></div>
+        <span style="text-align:right;font-family:'JetBrains Mono'">${v}%</span>
+      </div>
+    `).join('');
+
+    // Strengths and Concerns
+    const strengthsHtml = (d.strengths || []).map(s => `<li>${esc(s)}</li>`).join('');
+    const concernsHtml = (d.concerns || []).map(c => `<li>${esc(c)}</li>`).join('');
+
+    // Evidence Ledger
+    const ledgerHtml = (d.evidence || []).map(e => `
+      <div class="ledger-item-row">
+        <span class="ledger-id-pill">${esc(e.id)}</span>
+        <div style="flex:1">
+          <div style="color:var(--text-main);font-weight:500">"${esc(e.quote)}"</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px">
+            Verified Source: ${esc(e.source_kind)} · ${esc(e.source)}
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    $('#report').innerHTML = `
+      <div class="dossier-layout">
+        <!-- 1. Executive Adjudication Card -->
+        <div class="adjudication-card">
+          <div>
+            <div class="stat-caption" style="margin-bottom:6px">Final Adjudication · ${esc(d.candidate)}</div>
+            <div class="verdict-status-banner ${decCls}">
+              <div class="verdict-heading-text">${esc(d.recommendation)}</div>
+            </div>
+            <p class="adjudication-narrative-p">${esc(a.narrative)}</p>
+            <div class="benchmark-data-row">
+              <span>Benchmark Tier: <strong>${esc(a.base_tier)}</strong></span>
+              <span>·</span>
+              <span>Hire Threshold: <strong>${esc(a.thresholds.HIRE)}</strong></span>
+              <span>·</span>
+              <span>Interview Threshold: <strong>${esc(a.thresholds.INTERVIEW)}</strong></span>
+            </div>
+          </div>
+
+          <div class="confidence-panel">
+            <div class="stat-caption">Confidence Index</div>
+            <div class="stat-confidence-num">${esc(d.confidence)}%</div>
+            <div class="confidence-meter-track">
+              <div class="confidence-meter-fill" style="width:${esc(d.confidence)}%"></div>
+            </div>
+            <div class="weighted-score-line">
+              <span>Weighted Score:</span>
+              <strong>${esc(a.weighted_score)} / 10.0</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Independent Review Matrix (4 Specialists) -->
+        <section>
+          <div class="section-bar">
+            <div class="section-bar-left">
+              <h2>Independent Specialist Evaluations</h2>
+              <p>Scores formed in strict isolation prior to inter-agent debate.</p>
+            </div>
+            <span class="nav-subtag">${esc(d.live_agents)} of 4 Personas Live</span>
+          </div>
+          <div class="persona-grid">
+            ${personasHtml}
+          </div>
+        </section>
+
+        <!-- 3. Dialectical Panel Deliberation -->
+        <section class="debate-main-card">
+          <div class="section-bar">
+            <div class="section-bar-left">
+              <h2>Dialectical Deliberation Record</h2>
+              <p>${esc(d.debate.topic)}</p>
+            </div>
+            <span class="nav-subtag">${d.debate.has_direct_response ? 'Direct Cross-Examination Verified' : 'Sequential Deliberation'}</span>
+          </div>
+
+          <div class="debate-two-col-grid">
+            <div class="debate-turn-stream">
+              ${turnsHtml}
+            </div>
+
+            <div class="debate-sidebar-stack">
+              <div class="sidebar-panel-block">
+                <div class="sidebar-panel-title">Adjudication & Gate Rationale</div>
+                <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.55">${esc(a.override)}</p>
+              </div>
+
+              <div class="sidebar-panel-block">
+                <div class="sidebar-panel-title">Role Weight Distribution</div>
+                <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:8px">${esc(a.weight_basis)}</div>
+                ${weightsHtml}
+                <div style="margin-top:10px;padding-top:6px;border-top:1px solid var(--border-light);font-size:11px;color:var(--text-muted)">
+                  Redistributed: ${Object.entries(a.effective_weights_after_confidence_redistribution || {}).map(([k, v]) => `${esc(k)}: ${esc(v)}%`).join(' · ')}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Verified Strengths & Concerns -->
+        <div class="findings-side-grid">
+          <div class="findings-card-panel">
+            <div class="stat-caption" style="color:var(--status-hire-text);margin-bottom:4px">Verified Competencies</div>
+            <h3 style="font-size:16px;margin-bottom:8px">Candidate Strengths</h3>
+            <ul class="findings-clean-list">${strengthsHtml}</ul>
+          </div>
+
+          <div class="findings-card-panel">
+            <div class="stat-caption" style="color:var(--status-hold-text);margin-bottom:4px">Verification Focus</div>
+            <h3 style="font-size:16px;margin-bottom:8px">Identified Concerns & Gaps</h3>
+            <ul class="findings-clean-list">${concernsHtml}</ul>
+          </div>
+        </div>
+
+        <!-- 5. Voice Deliberation Record -->
+        <div class="audio-recording-bar">
+          <div>
+            <div class="stat-caption" style="margin-bottom:2px">Voice Deliberation Playback</div>
+            <strong style="color:var(--text-main);font-size:14px">Multi-Voice Panel Discussion</strong>
+            <p style="font-size:12px;color:var(--text-muted)">Each specialist reads their debate turn aloud using your browser's speech engine.</p>
+          </div>
+          <div class="speech-controls">
+            <button class="speech-btn" id="speech-play-btn" onclick="speechPlay()">&#9654; Play Debate</button>
+            <button class="speech-btn" id="speech-pause-btn" onclick="speechPause()" disabled>&#9646;&#9646; Pause</button>
+            <button class="speech-btn" id="speech-stop-btn" onclick="speechStop()" disabled>&#9632; Stop</button>
+            <select class="speech-rate-select" id="speech-rate" title="Playback speed">
+              <option value="0.85">0.85×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.2">1.2×</option>
+              <option value="1.5">1.5×</option>
+            </select>
+          </div>
+          <div class="speech-progress-wrap">
+            <div class="speech-turn-label" id="speech-turn-label">Ready</div>
+            <div class="speech-progress-bg"><div class="speech-progress-fill" id="speech-progress-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- 6. Provenance Evidence Ledger -->
+        <section class="ledger-container">
+          <div class="section-bar" style="margin-bottom:12px;padding-bottom:8px">
+            <div class="section-bar-left">
+              <h2>Auditable Evidence Ledger</h2>
+              <p>All conclusions cite exact records verified from candidate submissions.</p>
+            </div>
+            <span class="nav-subtag">${d.evidence ? d.evidence.length : 0} Citations Verified</span>
+          </div>
+          <div class="ledger-entry-list">
+            ${ledgerHtml || '<p style="color:var(--text-muted);font-size:13px">No extractable evidence records found.</p>'}
+          </div>
+        </section>
+      </div>
+    `;
+
+    $('#report').style.display = 'block';
+  }
+
+  // ── Web Speech API: Debate Voice Playback ─────────────────────────────────
+  let _speechTurns = [];
+  let _speechIdx = 0;
+  let _speechPaused = false;
+  let _speechVoices = {};
+
+  // Load voices once they are available (async on some browsers)
+  function loadSpeechVoices() {
+    const all = window.speechSynthesis.getVoices();
+    if (!all.length) return; // not ready yet — onvoiceschanged will retry
+    // Prefer en-US voices; fall back to any English
+    const enUS = all.filter(v => v.lang && v.lang.startsWith('en'));
+    const pick = (i) => enUS[i % enUS.length] || all[0];
+    // Assign distinct voices to the four specialist roles
+    _speechVoices = {
+      'Technical Evaluator':  pick(0),
+      'HR / Culture Fit':     pick(1),
+      'Hiring Manager':       pick(2),
+      'Skeptic / Devil\'s Advocate': pick(3),
+      'default': pick(0),
+    };
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
+    loadSpeechVoices();
+  }
+
+  function _speechSetUI(playing) {
+    const playBtn  = document.getElementById('speech-play-btn');
+    const pauseBtn = document.getElementById('speech-pause-btn');
+    const stopBtn  = document.getElementById('speech-stop-btn');
+    if (!playBtn) return;
+    playBtn.disabled  = playing;
+    pauseBtn.disabled = !playing;
+    stopBtn.disabled  = !playing;
+    playBtn.classList.toggle('playing', playing);
+  }
+
+  function _speechSetProgress(idx, total, speaker) {
+    const label = document.getElementById('speech-turn-label');
+    const fill  = document.getElementById('speech-progress-fill');
+    if (label) label.textContent = total ? `Turn ${idx + 1} / ${total} — ${speaker}` : 'Ready';
+    if (fill)  fill.style.width = total ? `${Math.round(((idx + 1) / total) * 100)}%` : '0%';
+  }
+
+  function _speechReadTurn(idx) {
+    if (idx >= _speechTurns.length) {
+      // Finished
+      _speechSetUI(false);
+      _speechSetProgress(0, 0, '');
+      const label = document.getElementById('speech-turn-label');
+      if (label) label.textContent = 'Playback complete';
+      return;
+    }
+
+    const turn = _speechTurns[idx];
+    _speechIdx = idx;
+    const speaker = turn.speaker || 'Evaluator';
+    _speechSetProgress(idx, _speechTurns.length, speaker);
+
+    const rate = parseFloat(document.getElementById('speech-rate')?.value || '1');
+    const utter = new SpeechSynthesisUtterance();
+
+    // Prefix each turn with the speaker name so it reads naturally
+    utter.text = `${speaker} says: ${turn.message || turn.reasoning || ''}`;
+    utter.rate = rate;
+    utter.pitch = 1;
+
+    // Assign a voice keyed to this speaker role
+    const voiceKey = Object.keys(_speechVoices).find(k => speaker.includes(k.split(' ')[0])) || 'default';
+    if (_speechVoices[voiceKey]) utter.voice = _speechVoices[voiceKey];
+
+    utter.onend = () => {
+      if (!_speechPaused) _speechReadTurn(idx + 1);
+    };
+    utter.onerror = () => {
+      if (!_speechPaused) _speechReadTurn(idx + 1);
+    };
+
+    window.speechSynthesis.speak(utter);
+  }
+
+  window.speechPlay = function() {
+    if (!('speechSynthesis' in window)) {
+      alert('Your browser does not support speech synthesis. Please try Chrome or Edge.');
+      return;
+    }
+    if (_speechTurns.length === 0) {
+      alert('No debate turns available for playback. Run a candidate analysis first.');
+      return;
+    }
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+      _speechPaused = false;
+      _speechSetUI(true);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    _speechPaused = false;
+    _speechSetUI(true);
+    _speechReadTurn(0);
+  };
+
+  window.speechPause = function() {
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+      window.speechSynthesis.pause();
+      _speechPaused = true;
+      const playBtn = document.getElementById('speech-play-btn');
+      const pauseBtn = document.getElementById('speech-pause-btn');
+      if (playBtn) { playBtn.disabled = false; playBtn.textContent = '▶ Resume'; }
+      if (pauseBtn) pauseBtn.disabled = true;
+    }
+  };
+
+  window.speechStop = function() {
+    window.speechSynthesis.cancel();
+    _speechPaused = false;
+    _speechSetUI(false);
+    _speechSetProgress(0, 0, '');
+    const label = document.getElementById('speech-turn-label');
+    if (label) label.textContent = 'Stopped';
+    const playBtn = document.getElementById('speech-play-btn');
+    if (playBtn) playBtn.textContent = '▶ Play Debate';
+  };
+
+  // Multi-Candidate Switcher
+  let reports = {};
+  function showCandidate(name) {
+    document.querySelectorAll('.candidate-switch-pill').forEach(t => {
+      const s = t.dataset.name === name;
+      t.classList.toggle('selected', s);
+      t.setAttribute('aria-selected', String(s));
+    });
+    renderReport(reports[name]);
+    $('#report').focus();
+    $('#report').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Form Submission
+  $('#form').onsubmit = async e => {
+    e.preventDefault();
+    if (!$('#candidateResume').files.length && !$('#candidateTranscript').files.length) {
+      return show('Please attach a candidate resume, interview transcript, or both.');
+    }
+
+    const b = $('#submit');
+    b.disabled = true;
+    b.innerHTML = '<span>Deliberating Candidate Dossier…</span>';
+    show('');
+    $('#empty').style.display = 'none';
+
+    let n = 0;
+    setStep(0);
+    const timer = setInterval(() => {
+      n = Math.min(4, n + 1);
+      setStep(n);
+    }, 1200);
+
+    try {
+      const r = await fetch('/api/analyze', { method: 'POST', body: new FormData($('#form')) });
+      const d = await r.json();
+      if (!r.ok) throw Error(d.error);
+
+      reports = d.reports;
+      const namesList = Object.keys(reports);
+      if (namesList.length > 1) {
+        $('#tabs').innerHTML = namesList.map((name, i) => `
+          <button class="candidate-switch-pill ${i === 0 ? 'selected' : ''}" type="button" data-name="${esc(name)}">
+            ${esc(name)}
+          </button>
+        `).join('');
+        $('#tabs').style.display = 'flex';
+        document.querySelectorAll('.candidate-switch-pill').forEach(t => {
+          t.onclick = () => showCandidate(t.dataset.name);
+        });
+      } else {
+        $('#tabs').style.display = 'none';
+      }
+
+      showCandidate(namesList[0]);
+      setStep(5);
+    } catch (err) {
+      show(err.message || 'Error occurred during panel deliberation.');
+      $('#empty').style.display = 'block';
+      setStep(-1);
+    } finally {
+      clearInterval(timer);
+      b.disabled = false;
+      b.innerHTML = '<span>Convene Panel & Initiate Deliberation →</span>';
+    }
+  };
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Evidence-led multi-agent interview panel." />
+    <title>Panelroom — AI interview panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/enhancements.css" />
+    <link rel="stylesheet" href="/slate.css" />
+    <link rel="stylesheet" href="/records.css" />
+    <link rel="stylesheet" href="/autofill.css" />
+    <link rel="stylesheet" href="/voice.css" />
+    <link rel="stylesheet" href="/always-records.css" />
+    <link rel="stylesheet" href="/insights.css" />
+    <link rel="stylesheet" href="/theme.css" />
+    <link rel="stylesheet" href="/dark-fixes.css" />
+    <link rel="stylesheet" href="/executive-ui.css" />
+    <link rel="stylesheet" href="/records-pro.css" />
+    <link rel="stylesheet" href="/professional-redesign.css" />
+    <link rel="stylesheet" href="/hero-refresh.css" />
+    <link rel="stylesheet" href="/full-redesign.css" />
+    <link rel="stylesheet" href="/layout-fix.css" />
+    <link rel="stylesheet" href="/intake-polish.css" />
+    <link rel="stylesheet" href="/debate-ledger.css" />
+    <link rel="stylesheet" href="/finishing-touches.css" />
+    <link rel="stylesheet" href="/release-polish.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Panelroom home"><span class="brand-mark">P</span>Panelroom</a>
+        <nav class="topnav" aria-label="Product navigation"><a href="#process">Method</a><a href="#results">Panel record</a><button class="theme-toggle" type="button" data-action="theme" aria-pressed="false"><span aria-hidden="true">☾</span><b>Dark mode</b></button><span class="secure-note"><i></i> Evidence-led</span></nav>
+      </header>
+
+      <section class="intro studio-intro">
+        <div class="studio-intro-copy"><p class="eyebrow">Multi-agent interview panel</p><h1>Get the whole room,<br /><em>not one opinion.</em></h1><p class="lede">Turn a resume and interview transcript into an evidence-backed panel discussion—with independent reviewers, direct challenge, and a reasoned hiring decision.</p><div class="studio-proof"><span><b>4</b> independent perspectives</span><span><b>1</b> shared evidence file</span><span><b>0</b> groupthink before debate</span></div></div>
+        <aside class="hero-panel" aria-label="Panel composition"><div class="panel-orbit"><span class="orbit-center">AI</span><span class="orbit-node violet">VM</span><span class="orbit-node sky">MK</span><span class="orbit-node amber">AR</span><span class="orbit-node coral">KI</span></div><p class="eyebrow">Your interview room</p><h2>Four seats,<br />four lenses.</h2><p>One shared evidence file. No groupthink until debate.</p><div class="signal-row"><span><i></i> Evidence cited</span><span><i></i> Separate calls</span></div></aside>
+      </section>
+
+      <section class="workspace" aria-label="Candidate material">
+        <div class="section-heading"><span>01</span><div><p class="eyebrow">Candidate material</p><h2>Set the brief</h2><p>Everything the panel sees is shown here.</p></div></div>
+        <div class="workspace-grid">
+          <div class="entry-area">
+            <div class="input-grid"><label class="field role-field"><span>Target role <small id="role-autofill">Auto-detected from Job Description when available</small></span><input id="role" placeholder="e.g. Senior Product Designer" autocomplete="off" /></label><button class="sample-button" id="load-sample" type="button">Load a sample candidate <span>↗</span></button></div>
+            <div class="candidate-toolbar"><div><p class="eyebrow">Candidate queue</p><p>Add every candidate for this role, then compare the full panel record.</p></div><label class="field seats-field"><span>Open roles</span><input id="hiring-count" type="number" min="1" value="1" /></label><button class="add-candidate" id="add-candidate" type="button">+ Add candidate</button></div>
+            <div id="candidate-stack">
+              <article class="candidate-card" data-candidate><header><span>Candidate 01</span><div class="name-entry"><input class="candidate-name" placeholder="Candidate name (optional)" autocomplete="off" /><small class="name-autofill">Auto-detected from resume when available</small></div></header><div class="materials-grid"><label class="field material"><span>Resume <small>paste text or load PDF/text</small></span><textarea class="candidate-resume" placeholder="Paste the candidate's resume…"></textarea><span class="upload-control"><input class="file-input" data-field="resume" type="file" accept=".pdf,.txt,.md,application/pdf,text/plain,text/markdown" /><b>Attach PDF or text file</b></span></label><label class="field material"><span>Interview transcript <small>paste text or load PDF/text</small></span><textarea class="candidate-transcript" placeholder="Paste the interview transcript…"></textarea><span class="upload-control"><input class="file-input" data-field="transcript" type="file" accept=".pdf,.txt,.md,application/pdf,text/plain,text/markdown" /><b>Attach PDF or text file</b></span></label></div></article>
+            </div>
+            <label class="field material job-description"><span>Detailed job description <small>used to assess every candidate's role fit</small></span><textarea id="job-description" placeholder="Paste the full job description, responsibilities, must-have skills, and nice-to-haves…"></textarea><span class="upload-control"><input class="file-input" data-target="job-description" type="file" accept=".pdf,.txt,.md,application/pdf,text/plain,text/markdown" /><b>Attach PDF or text file</b></span></label>
+          </div>
+          <aside class="roster"><div class="roster-title"><div><p class="eyebrow">Panel roster</p><h3>Four seats, four lenses</h3></div><span class="live-pill">ready</span></div><div class="roster-list"><article><span class="persona-dot violet"></span><div><b>Vikramaditya Motwane</b><small>Technical depth</small></div><em>01</em></article><article><span class="persona-dot sky"></span><div><b>Manasvi Kamble</b><small>People &amp; culture</small></div><em>02</em></article><article><span class="persona-dot amber"></span><div><b>Anirudh Ravichander</b><small>Role &amp; impact</small></div><em>03</em></article><article><span class="persona-dot coral"></span><div><b>Kalyani Iyer</b><small>Risk &amp; evidence</small></div><em>04</em></article></div><div class="roster-note"><span>⊕</span><p>Every reviewer sees the same source material—but no peer conclusions until deliberation.</p></div></aside>
+        </div>
+        <div class="run-row"><p><b>Privacy note:</b> Your material is sent only to the configured server-side model call. It is not retained by Panelroom.</p><div class="run-actions"><span id="brief-status">Awaiting candidate material</span><button id="run-panel" class="run-button" type="button">Convene the panel <span>→</span></button></div></div>
+      </section>
+
+      <section id="process" class="process" aria-label="How it works">
+        <div class="section-heading"><span>02</span><div><p class="eyebrow">Decision protocol</p><h2>How the decision is made</h2><p>Independent judgment before consensus.</p></div></div>
+        <div class="steps">
+          <article><b>01</b><h3>Build the evidence file</h3><p>Facts, skills, claims, and open questions are extracted into one shared profile.</p></article>
+          <article><b>02</b><h3>Hear every voice separately</h3><p>Four specialist calls assess the candidate without seeing each other’s conclusions.</p></article>
+          <article><b>03</b><h3>Challenge the room</h3><p>Panelists respond directly to evidence and disagreement before a hiring chair decides.</p></article>
+        </div>
+      </section>
+
+      <section id="results" class="results hidden" aria-live="polite">
+        <div class="section-heading"><span>03</span><div><h2>Panel record</h2><p id="result-subtitle">Evidence and deliberation.</p></div></div>
+        <div id="status" class="status-card"><span class="pulse"></span><span>Preparing the panel record…</span></div>
+        <div id="run-timeline" class="run-timeline hidden" aria-label="Panel progress"><article data-stage="0"><span>1</span><p>Evidence file</p></article><i></i><article data-stage="1"><span>2</span><p>Independent reads</p></article><i></i><article data-stage="2"><span>3</span><p>Panel debate</p></article><i></i><article data-stage="3"><span>4</span><p>Hiring decision</p></article></div>
+        <div id="report"></div>
+      </section>
+    </main>
+    <template id="report-template">
+      <div class="decision-card"><div><p class="eyebrow">Final recommendation</p><h2 class="decision-label"></h2><p class="role-fit"></p><p class="decision-rationale"></p></div><div class="confidence"><span>Confidence</span><strong></strong><div class="confidence-track"><i></i></div></div></div><section class="visual-insights" aria-label="Panel visual summary"><article class="coverage-chart-card"><div><p class="eyebrow">Role coverage</p><h3>Requirements backed by evidence</h3><p>Compares the job-description requirements with facts supported in the candidate record.</p></div><div class="coverage-chart" role="img" aria-label="Role requirement evidence coverage"></div><div class="coverage-legend"></div></article><article><div><p class="eyebrow">Confidence by panelist</p><h3>How certain each lens was</h3><p>Confidence reflects each panelist’s cited-evidence assessment.</p></div><div class="confidence-bars-chart" role="img" aria-label="Panelist confidence bar graph"></div></article></section>
+      <div class="profile-card"><div class="profile-header"><div><p class="eyebrow">Candidate profile</p><h3 class="candidate-name"></h3></div><p class="headline"></p></div><div class="fact-columns"><div><h4>Supported skills</h4><ul class="skills-list"></ul></div><div><h4>Role requirements</h4><ul class="requirements-list"></ul></div><div><h4>Claims to validate</h4><ul class="claims-list"></ul></div></div></div>
+      <div class="report-section"><div class="section-title"><p class="eyebrow">Independent opinions</p><h3>Four lenses. No groupthink.</h3><p>Each opinion was generated in a separate call before the panel debate.</p></div><div class="opinion-grid"></div></div>
+      <div class="debate-card"><div class="debate-heading"><div><p class="eyebrow">Panel debate</p><h3 class="debate-summary"></h3></div><div class="voice-player"><div class="voice-controls"><button class="voice-button" type="button" data-action="voice-play">▶ Listen to debate</button><button class="voice-secondary" type="button" data-action="voice-pause" disabled>Pause</button><button class="voice-secondary" type="button" data-action="voice-stop" disabled>Stop</button></div><p class="voice-status" aria-live="polite">Listen speaker by speaker.</p></div></div><div class="exchange-list"></div><div class="unresolved-box"><b>Still unresolved</b><ul></ul></div></div>
+      <div class="closing-grid"><article><p class="eyebrow">Strengths</p><ul class="strengths-list"></ul></article><article><p class="eyebrow">Concerns</p><ul class="concerns-list"></ul></article><article><p class="eyebrow">Next step</p><p class="next-step"></p><div class="factors"></div></article></div>
+      <div class="report-footer"><p>Decision created from cited candidate material and recorded panel deliberation.</p><button class="export-button" type="button" data-action="export">Export panel record ↓</button></div>
+    </template>
+    <template id="slate-template"><section class="slate-report"><div class="slate-hero"><div><p class="eyebrow">Hiring slate</p><h2><span class="selected-count"></span> candidates ready to hire</h2><p class="slate-summary"></p></div><div class="slate-seats"><span>Open roles</span><strong></strong></div></div><div class="comparison-section"><div><p class="eyebrow">Candidate comparison</p><h3>Shortlist by evidence, not an average</h3><p>Readiness is the selection chair’s evidence-weighted judgment across the complete panel record.</p></div><div class="comparison-chart" role="img" aria-label="Candidate readiness comparison"></div></div><div class="panel-verdicts"><div><p class="eyebrow">At-a-glance panel stance</p><h3>How the room voted</h3><p>Each stance was formed independently before debate; the complete evidence record is shown below.</p></div><div class="verdict-table-wrap"><table><thead><tr><th>Candidate</th><th>Vikramaditya</th><th>Manasvi</th><th>Anirudh</th><th>Kalyani</th><th>Chair</th></tr></thead><tbody></tbody></table></div></div><div class="shortlist-section"><p class="eyebrow">Recommended shortlist</p><div class="shortlist-grid"></div></div><div class="slate-risk"><p class="eyebrow">Portfolio risks &amp; unresolved trade-offs</p><ul></ul></div><section class="detailed-records"><div><p class="eyebrow">Full evidence trail</p><h3>Detailed interview records</h3><p>Independent opinions, cited evidence, direct agreement or disagreement, and final reasoning for every candidate.</p></div><div class="record-list"></div></section></section></template>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
+
