@@ -225,7 +225,7 @@ def call_llm(provider: str, api_key: str, system: str, user: str) -> dict:
                 ],
                 "response_format": {"type": "json_object"},
                 "temperature": 0.2,
-                "max_tokens": 300,
+                ("max_completion_tokens" if provider == "groq" else "max_tokens"): 1024 if provider == "groq" else 300,
             }
         ).encode()
         url = (
