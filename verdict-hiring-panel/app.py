@@ -232,7 +232,7 @@ def call_llm(provider: str, api_key: str, system: str, user: str) -> dict:
             {
                 "systemInstruction": {"parts": [{"text": system}]},
                 "contents": [{"parts": [{"text": user}]}],
-                "generationConfig": {"responseMimeType": "application/json", "temperature": 0.2, "maxOutputTokens": 250},
+                "generationConfig": {"responseMimeType": "application/json", "temperature": 0.2, "maxOutputTokens": 1024},
             }
         ).encode()
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
