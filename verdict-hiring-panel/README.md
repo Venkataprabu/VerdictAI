@@ -62,6 +62,9 @@ Key assignment deliberately preserves independence:
 - `GEMINI_API_KEY_CULTURE` - Gemini, HR / Culture Agent
 - `GEMINI_API_KEY_HIRING` - Gemini, Hiring Manager Agent
 - `GROQ_API_KEY_SKEPTIC` - Groq, Skeptic Agent
+- `GROQ_MODEL` - optional Groq model override (default: `openai/gpt-oss-120b`)
+- `OPENROUTER_API_KEY_TECHNICAL`, `OPENROUTER_API_KEY_SKEPTIC`, or `OPENROUTER_API_KEY` - optional backward-compatible OpenRouter keys for the two non-Gemini personas
+- `OPENROUTER_MODEL` - optional OpenRouter model override
 - `GEMINI_API_KEY_ADJUDICATOR` - optional Gemini narrative writer after the code-level adjudication
 - `FLASK_DEBUG` - leave `false` (default). Only set to `true` for local debugging;
   never enable it in a deployed environment — Flask's interactive debugger
@@ -140,9 +143,13 @@ debate turns and the final positions are calls that can add up).
 
 1. Push this project to a Git repository (or run `vercel deploy` from this folder).
 2. Import the repository in the Vercel dashboard (or accept the CLI prompts).
-3. In the project's Environment Variables settings, add the same keys listed
-   above (`GROQ_API_KEY_TECHNICAL`, etc.) — never commit them in the repo.
-4. Deploy.
+3. In the project's Environment Variables settings, add the four role keys listed
+   above (`GROQ_API_KEY_TECHNICAL`, `GEMINI_API_KEY_CULTURE`,
+   `GEMINI_API_KEY_HIRING`, and `GROQ_API_KEY_SKEPTIC`) for the deployment
+   environment you use (Production, Preview, or Development) — never commit
+   them in the repo. Redeploy after changing environment variables.
+4. Deploy. Each persona card shows whether its independent call used a live API
+   or the local fallback, plus the reason when a live call failed.
 
 Static assets (`public/demo-debate.mp3`, `public/demo-debate-transcript.txt`)
 are served by Vercel's CDN directly from the `public/` directory rather than
