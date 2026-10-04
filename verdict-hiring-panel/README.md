@@ -56,16 +56,16 @@ persona calls, copy `.env.example` to `.env`, add the provider keys, then run
 share it anywhere outside your own machine** — if a key ever leaves your
 machine (chat, screenshot, public repo), rotate it immediately.
 
-Key assignment deliberately preserves independence:
+All four personas call OpenRouter independently. You can use one shared key,
+or set a separate key per persona:
 
-- `GROQ_API_KEY_TECHNICAL` - Groq, Technical Agent
-- `GEMINI_API_KEY_CULTURE` - Gemini, HR / Culture Agent
-- `GEMINI_API_KEY_HIRING` - Gemini, Hiring Manager Agent
-- `GROQ_API_KEY_SKEPTIC` - Groq, Skeptic Agent
-- `GROQ_MODEL` - optional Groq model override (default: `openai/gpt-oss-120b`)
-- `OPENROUTER_API_KEY_TECHNICAL`, `OPENROUTER_API_KEY_SKEPTIC`, or `OPENROUTER_API_KEY` - optional backward-compatible OpenRouter keys for the two non-Gemini personas
+- `OPENROUTER_API_KEY` - required shared OpenRouter key used by all personas unless overridden below
+- `OPENROUTER_API_KEY_TECHNICAL` - optional Technical persona key
+- `OPENROUTER_API_KEY_CULTURE` - optional HR / Culture persona key
+- `OPENROUTER_API_KEY_HIRING` - optional Hiring Manager persona key
+- `OPENROUTER_API_KEY_SKEPTIC` - optional Skeptic persona key
+- `OPENROUTER_API_KEY_ADJUDICATOR` - optional narrative writer key
 - `OPENROUTER_MODEL` - optional OpenRouter model override
-- `GEMINI_API_KEY_ADJUDICATOR` - optional Gemini narrative writer after the code-level adjudication
 - `FLASK_DEBUG` - leave `false` (default). Only set to `true` for local debugging;
   never enable it in a deployed environment — Flask's interactive debugger
   allows arbitrary code execution if it's ever reachable.
@@ -88,7 +88,7 @@ Key assignment deliberately preserves independence:
 
 ## AI and independence
 
-When keys are configured, `app.py` calls Groq or Gemini separately for each persona. Each independent call receives only the job context and verified evidence packet, never another agent's conclusion. The debate calls are separate from the independent calls and receive the full prior debate transcript. If a key/API call is absent or fails, the app falls back to a transparent local rule set and labels this clearly.
+When keys are configured, `app.py` calls OpenRouter separately for each persona. Each independent call receives only the job context and verified evidence packet, never another agent's conclusion. The debate calls are separate from the independent calls and receive the full prior debate transcript. If a key/API call is absent or fails, the app falls back to a transparent local rule set and labels this clearly.
 
 ## Decision mechanics
 
@@ -143,11 +143,10 @@ debate turns and the final positions are calls that can add up).
 
 1. Push this project to a Git repository (or run `vercel deploy` from this folder).
 2. Import the repository in the Vercel dashboard (or accept the CLI prompts).
-3. In the project's Environment Variables settings, add the four role keys listed
-   above (`GROQ_API_KEY_TECHNICAL`, `GEMINI_API_KEY_CULTURE`,
-   `GEMINI_API_KEY_HIRING`, and `GROQ_API_KEY_SKEPTIC`) for the deployment
-   environment you use (Production, Preview, or Development) — never commit
-   them in the repo. Redeploy after changing environment variables.
+3. In the project's Environment Variables settings, add `OPENROUTER_API_KEY`
+   for the deployment environment you use (Production, Preview, or Development).
+   You may instead set the four role-specific OpenRouter keys listed above.
+   Never commit keys in the repo. Redeploy after changing environment variables.
 4. Deploy. Each persona card shows whether its independent call used a live API
    or the local fallback, plus the reason when a live call failed.
 
@@ -159,7 +158,7 @@ the same `public/` folder at the same root-level URLs
 
 If you're on Vercel's Hobby plan and see timeouts on requests that involve
 several live LLM calls, either raise `maxDuration` further (Pro plan) or
-reduce per-provider call latency (smaller `GROQ_MODEL`/`GEMINI_MODEL`, or a
+reduce per-provider call latency (a faster `OPENROUTER_MODEL`, or a
 shorter `call_llm` timeout in `app.py`).
 
 ## Files
