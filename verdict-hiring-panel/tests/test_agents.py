@@ -76,10 +76,10 @@ def test_each_role_is_assigned_a_separate_api_key_name():
     # set) — assert on the underlying env var names instead, which is what
     # actually enforces isolation.
     settings = {
-        "Technical": "GROQ_API_KEY_TECHNICAL",
-        "HR / Culture": "GEMINI_API_KEY_CULTURE",
-        "Hiring Manager": "GEMINI_API_KEY_HIRING",
-        "Skeptic": "GROQ_API_KEY_SKEPTIC",
+        "Technical": "OPENROUTER_API_KEY_TECHNICAL",
+        "HR / Culture": "OPENROUTER_API_KEY_CULTURE",
+        "Hiring Manager": "OPENROUTER_API_KEY_HIRING",
+        "Skeptic": "OPENROUTER_API_KEY_SKEPTIC",
     }
     assert len(set(settings.values())) == 4, "each role must read a distinct credential"
     for role, expected_env_name in settings.items():
