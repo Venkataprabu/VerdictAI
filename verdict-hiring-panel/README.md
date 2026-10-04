@@ -81,7 +81,7 @@ or set a separate key per persona:
 - Run four separately invoked panel personas with no access to another persona's pre-debate conclusion.
 - Run a real, sequential debate where later turns directly respond to earlier turns and can revise a position.
 - Use post-debate scores in code-level adjudication. Dimension weights are confidence-adjusted and redistributed when evidence is weak.
-- Apply explicit thresholds and a Skeptic veto only when a specific, evidence-backed contradiction remains unresolved.
+- Apply explicit thresholds and a Skeptic veto only when the Skeptic identifies an unresolved conflict between two distinct, verified candidate evidence records. General uncertainty or shared-work wording alone does not trigger a veto.
 - Compute confidence from agreement, evidence coverage, debate resolution, and override penalty; the LLM does not invent the percentage.
 - Show the full debate, an explicit before/after JSON state-change log per agent, changed positions, weighting math, strengths, concerns, and evidence ledger.
 - Include `public/demo-debate.mp3`, a multi-voice local-speech recording of the debate format, plus its transcript.
@@ -97,7 +97,7 @@ When keys are configured, `app.py` calls OpenRouter separately for each persona.
 3. Final agent positions are derived after the debate, with visible pre/post scores and revision reasons, and collected into an explicit `state_log` array (`pre_debate_score`, `post_debate_score`, `changed`, `reason` per agent) so a position change is auditable as data, not just prose.
 4. Default dimensions are Technical 35%, Hiring Manager 30%, HR/Culture 20%, and Skeptic 15%. Attached skills context can nudge the first three dimensions.
 5. Low-confidence dimensions receive less weight; the released weight is redistributed across the other dimensions.
-6. Scores map to Hire (>=8), Interview (5-7.99), or Reject (<5). A specific unresolved Skeptic contradiction caps a Hire at `INTERVIEW — VERIFY CREDIBILITY CLAIM`.
+6. Scores map to Hire (>=8), Interview (5-7.99), or Reject (<5). A specific unresolved Skeptic contradiction, supported by two distinct verified candidate evidence IDs, caps a Hire at `INTERVIEW — VERIFY CREDIBILITY CLAIM`.
 7. The optional adjudicator LLM writes the narrative only; it cannot silently change the computed recommendation.
 
 ## Security notes

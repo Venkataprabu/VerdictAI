@@ -344,6 +344,9 @@ def fallback_debate(position: str, evidence: list[dict], agents: list[dict]) -> 
             "quote": skeptic["quote"],
             "message": f"The record supports a signal, but it does not independently prove the full ownership scope for {position}.",
             "revised": False, "unresolved_risk": unresolved, "resolved": False,
+            "specific_contradiction": False,
+            "contradiction_evidence_ids": [],
+            "contradiction_reason": "",
         },
         {
             "turn": 2, "speaker": "Hiring Manager", "responds_to": "Skeptic",
@@ -351,6 +354,9 @@ def fallback_debate(position: str, evidence: list[dict], agents: list[dict]) -> 
             "quote": hiring["quote"],
             "message": "I agree the ownership claim needs validation, but the verified role impact is still relevant and should not be diluted into a rejection.",
             "revised": True, "unresolved_risk": unresolved, "resolved": not unresolved,
+            "specific_contradiction": False,
+            "contradiction_evidence_ids": [],
+            "contradiction_reason": "",
         },
         {
             "turn": 3, "speaker": "Technical", "responds_to": "Hiring Manager",
@@ -358,6 +364,9 @@ def fallback_debate(position: str, evidence: list[dict], agents: list[dict]) -> 
             "quote": technical["quote"],
             "message": "The technical signal is promising; I am revising from an unqualified advance to advance only with a direct production-ownership check.",
             "revised": True, "unresolved_risk": unresolved, "resolved": False,
+            "specific_contradiction": False,
+            "contradiction_evidence_ids": [],
+            "contradiction_reason": "",
         },
         {
             "turn": 4, "speaker": "HR / Culture", "responds_to": "Technical",
@@ -365,8 +374,50 @@ def fallback_debate(position: str, evidence: list[dict], agents: list[dict]) -> 
             "quote": technical["quote"],
             "message": "I agree the evidence is promising, but the final report should distinguish collaboration from sole ownership and carry that question into the interview.",
             "revised": True, "unresolved_risk": unresolved, "resolved": False,
+            "specific_contradiction": False,
+            "contradiction_evidence_ids": [],
+            "contradiction_reason": "",
         },
     ]
+
+
+def validated_contradiction(result: dict, evidence: list[dict]) -> dict:
+    """Accept a veto claim only when it cites two distinct verified candidate facts."""
+    candidate_ids = {
+        item["id"]
+        for item in evidence
+        if item.get("verified") is True and is_candidate_source(item.get("source_kind", ""))
+    }
+    ids = result.get("contradiction_evidence_ids")
+    reason = str(result.get("contradiction_reason", "")).strip()
+    valid = (
+        result.get("specific_contradiction") is True
+        and isinstance(ids, list)
+        and len(ids) == 2
+        and all(isinstance(item, str) for item in ids)
+        and ids[0] != ids[1]
+        and set(ids).issubset(candidate_ids)
+        and result.get("evidence_id") in ids
+        and len(reason) >= 30
+    )
+    return {
+        "specific_contradiction": valid,
+        "contradiction_evidence_ids": ids if valid else [],
+        "contradiction_reason": reason[:280] if valid else "",
+    }
+
+
+def has_specific_unresolved_contradiction(turns: list[dict], evidence: list[dict]) -> bool:
+    for turn in turns:
+        validated = validated_contradiction(turn, evidence)
+        if (
+            turn.get("speaker") == "Skeptic"
+            and turn.get("unresolved_risk")
+            and not turn.get("resolved")
+            and validated["specific_contradiction"]
+        ):
+            return True
+    return False
 
 
 def live_debate_turn(role: str, position: str, requirements: str, evidence: list[dict], agents: list[dict], history: list[dict]) -> dict | None:
@@ -378,8 +429,11 @@ def live_debate_turn(role: str, position: str, requirements: str, evidence: list
 Respond directly to the latest speaker, cite exact evidence, revise your view if warranted.
 Only candidate records prove capability; job-posting records define the role.
 Return strict JSON: speaker, responds_to, stance, message (2 sentences max), evidence_id, revised (boolean),
-unresolved_risk (boolean), resolved (boolean), final_position (Strong, Promising, Needs validation, or Unknown).
-Only cite an ID from the evidence packet."""
+unresolved_risk (boolean), resolved (boolean), final_position (Strong, Promising, Needs validation, or Unknown),
+specific_contradiction (boolean), contradiction_evidence_ids (two distinct IDs or []), contradiction_reason (one sentence).
+Set specific_contradiction=true only when two verified candidate-source records make directly conflicting factual claims.
+Cite both record IDs and explain the exact conflict. Missing details, teamwork, shared ownership, or uncertainty alone are not contradictions.
+Never use job-posting records as evidence of a candidate contradiction."""
     user = json.dumps(
         {
             "requirements": requirements,
@@ -391,6 +445,7 @@ Only cite an ID from the evidence packet."""
     )
     try:
         result = validate_evidence_result(call_llm(provider, api_key, system, user), evidence)
+        result.update(validated_contradiction(result, evidence))
         result.update({"turn": len(history) + 1, "speaker": role, "quote": result["quote"], "mode": f"Live {provider.title()} API"})
         return result
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
@@ -520,7 +575,7 @@ def fallback_narrative(adjudication: dict, debate_turns: list[dict]) -> str:
     if adjudication["override_applied"]:
         return (
             f"The post-debate weighted score is {adjudication['weighted_score']}/10, but the Skeptic surfaced "
-            "a specific evidence-backed ownership contradiction that remained unresolved. The panel therefore "
+            "a specific evidence-backed contradiction that remained unresolved. The panel therefore "
             "caps the recommendation at an interview focused on verifying the claim."
         )
     return (
@@ -585,8 +640,7 @@ def run_panel(sources: dict[str, dict[str, str]], position: str, requirements: s
     unresolved_turns = [
         turn for turn in debate_turns if turn.get("unresolved_risk") and not turn.get("resolved")
     ]
-    skeptic = next(agent for agent in final_agents if agent["role"] == "Skeptic")
-    veto = bool(unresolved_turns and skeptic.get("evidence_id"))
+    veto = has_specific_unresolved_contradiction(debate_turns, evidence)
     override_applied = veto and base_tier == "HIRE"
     recommendation = (
         "INTERVIEW — VERIFY CREDIBILITY CLAIM" if override_applied
@@ -613,7 +667,7 @@ def run_panel(sources: dict[str, dict[str, str]], position: str, requirements: s
         for agent in final_agents[:3] if agent.get("evidence_id")
     ]
     concerns = [
-        "Individual ownership must be validated: collaboration evidence does not prove sole authorship."
+        "The Skeptic identified a specific evidence conflict that requires human review."
         if veto else "The panel should still validate the strongest claims directly in the next interview."
     ]
     if not evidence:

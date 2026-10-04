@@ -1580,6 +1580,12 @@
             Cited <strong>${esc(t.evidence_id)}</strong>: "${esc(t.quote)}"
           </div>
         ` : ''}
+        ${t.specific_contradiction ? `
+          <div class="turn-citation-chip">
+            Specific conflict cites ${t.contradiction_evidence_ids.map(id => esc(id)).join(' and ')}:
+            ${esc(t.contradiction_reason)}
+          </div>
+        ` : ''}
       </div>
     `).join('');
 
