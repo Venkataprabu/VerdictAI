@@ -67,7 +67,6 @@ print(
     + (", ".join(ENV_FILES_LOADED) if ENV_FILES_LOADED else "none")
 )
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "meta-llama/llama-3.3-70b-instruct")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 app = Flask(__name__, static_folder="public", static_url_path="")
 # Vercel serves anything under public/** straight from its CDN at the same root path
@@ -157,23 +156,23 @@ def evidence_packet(evidence: list[dict]) -> str:
 
 
 def provider_env_names(role: str, phase: str = "initial") -> tuple[str, ...]:
-    """Role-specific keys are preferred, with generic-key compatibility."""
+    """Role-specific OpenRouter keys are preferred, with a shared key fallback."""
     if phase == "adjudication":
-        return ("GEMINI_API_KEY_ADJUDICATOR", "GEMINI_API_KEY")
+        return ("OPENROUTER_API_KEY_ADJUDICATOR", "OPENROUTER_API_KEY")
     settings = {
         "Technical": ("OPENROUTER_API_KEY_TECHNICAL", "OPENROUTER_API_KEY"),
-        "HR / Culture": ("GEMINI_API_KEY_CULTURE", "GEMINI_API_KEY"),
-        "Hiring Manager": ("GEMINI_API_KEY_HIRING", "GEMINI_API_KEY"),
+        "HR / Culture": ("OPENROUTER_API_KEY_CULTURE", "OPENROUTER_API_KEY"),
+        "Hiring Manager": ("OPENROUTER_API_KEY_HIRING", "OPENROUTER_API_KEY"),
         "Skeptic": ("OPENROUTER_API_KEY_SKEPTIC", "OPENROUTER_API_KEY"),
     }
     return settings[role]
 
 
 def provider_for(role: str, phase: str = "initial") -> tuple[str, str]:
-    """Different keys preserve isolation; generic keys keep local setup compatible."""
-    provider = "gemini" if phase == "adjudication" or role in {"HR / Culture", "Hiring Manager"} else "openrouter"
-    api_key = next((os.getenv(name, "").strip() for name in provider_env_names(role, phase) if os.getenv(name, "").strip()), "")
-    return provider, api_key
+    """All panel personas use OpenRouter, with role-specific or shared credentials."""
+    names = provider_env_names(role, phase)
+    api_key = next((os.getenv(name, "").strip() for name in names if os.getenv(name, "").strip()), "")
+    return "openrouter", api_key
 
 
 def public_api_config() -> dict:
@@ -183,7 +182,7 @@ def public_api_config() -> dict:
         names = provider_env_names(role)
         selected_name = next((name for name in names if os.getenv(name, "").strip()), None)
         roles[role] = {
-            "provider": "gemini" if role in {"HR / Culture", "Hiring Manager"} else "groq",
+            "provider": "openrouter",
             "configured": selected_name is not None,
             "source": selected_name,
         }
@@ -191,7 +190,6 @@ def public_api_config() -> dict:
         "env_files_loaded": ENV_FILES_LOADED,
         "roles": roles,
     }
-
 
 def record_api_failure(role: str, reason: str) -> None:
     with API_FAILURES_LOCK:
@@ -207,46 +205,31 @@ def parse_json(raw: str) -> dict:
 
 
 def call_llm(provider: str, api_key: str, system: str, user: str) -> dict:
-    if provider == "openrouter":
-        body = json.dumps(
-            {
-                "model": OPENROUTER_MODEL,
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-                "response_format": {"type": "json_object"},
-                "temperature": 0.2,
-                "max_tokens": 300,
-            }
-        ).encode()
-        url = "https://openrouter.ai/api/v1/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://verdict-hiring-panel.vercel.app",
-            "X-Title": "Verdict Hiring Panel",
+    if provider != "openrouter":
+        raise ValueError(f"Unsupported provider: {provider}")
+    body = json.dumps(
+        {
+            "model": OPENROUTER_MODEL,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            "response_format": {"type": "json_object"},
+            "temperature": 0.2,
+            "max_tokens": 300,
         }
-    else:
-        body = json.dumps(
-            {
-                "systemInstruction": {"parts": [{"text": system}]},
-                "contents": [{"parts": [{"text": user}]}],
-                "generationConfig": {"responseMimeType": "application/json", "temperature": 0.2, "maxOutputTokens": 1024},
-            }
-        ).encode()
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
-        headers = {"x-goog-api-key": api_key, "Content-Type": "application/json"}
+    ).encode()
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://verdict-hiring-panel.vercel.app",
+        "X-Title": "Verdict Hiring Panel",
+    }
     req = urllib.request.Request(url, data=body, method="POST", headers=headers)
     with urllib.request.urlopen(req, timeout=45) as response:
         data = json.loads(response.read())
-    raw = (
-        data["choices"][0]["message"]["content"]
-        if provider == "openrouter"
-        else data["candidates"][0]["content"]["parts"][0]["text"]
-    )
-    return parse_json(raw)
-
+    return parse_json(data["choices"][0]["message"]["content"])
 
 def validate_evidence_result(result: dict, evidence: list[dict]) -> dict:
     valid_ids = {item["id"] for item in evidence}

@@ -1546,6 +1546,7 @@
           </div>
 
           <div class="specialist-evaluation-text">
+            <p><strong>${esc(ag.mode || 'Local fallback')}</strong>${ag.api_error ? ` · ${esc(ag.api_error)}` : ''}</p>
             <p class="text-clamp" id="clamp-ag-${i}">${esc(ag.reasoning)}</p>
             <button class="btn-clamp-readmore" id="btn-clamp-ag-${i}" onclick="toggleClamp('ag-${i}')">Expand full assessment</button>
           </div>
